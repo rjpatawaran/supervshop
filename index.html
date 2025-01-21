@@ -6,6 +6,13 @@
   <title>SuperV Storefront</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <style>
+    @font-face {
+      font-family: 'Rushblade';
+      src: url('rushblade-demo.italic.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -189,6 +196,21 @@
       }
       .logo {
         width: 80px;
+      }
+    }
+
+    /* Update header styles */
+    .header h1 {
+      font-family: 'Rushblade', Arial, sans-serif;
+      color: #28a745;  /* Using the same green as the price */
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Adjust header font size for mobile */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
       }
     }
   </style>
