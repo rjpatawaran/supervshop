@@ -366,7 +366,7 @@
         },
         async fetchProducts() {
           this.isLoading = true;
-          const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ef6aC85xcqnvKgfVbcsljfFMgNfnvDPxhgLlkgElUkLQ_W20zYJJ2eZG0tv8_JOxrewN7A9nfTmIsinlTb-p0eQ9Hs87h9igm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAnug2zSbyuKlhELAPielVN00AZj9sYZgaQT4CCPYgAdv7P-pyB2jvy9TsWiES0b6D4-ZhHlBPV2tRbcZTfeZgypBOME7-uH0wE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo"; // Replace with your API endpoint
+          const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ldwm6GiQWotYLgBocIQNDvN6KlDlGKgTyMNqrk0G1LM9mb8f9eBqw_P2m1YLXCUA6NE-8va54yIUMV5O3DyWZSLsNlVLpPOcm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnBg0dQ_5GEAiumgTv_QVaCZyKyUQSF5eiQtYAyZCCKycSUgEzkN_-pV_rxe2sx9tHAE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo";
           try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error("Failed to fetch data");
