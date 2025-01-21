@@ -83,43 +83,7 @@
     createApp({
       data() {
         return {
-          products: [
-            {
-              "BRAND": "PANDORA",
-              "CODE": "PD/PAB-132",
-              "NAME": "NISSAN R35 GT-R BODY SHELL",
-              "QTY": 1,
-              "P PRICE": 4200,
-              "UNIT": "PC",
-              "PRICE/PC": 4200,
-              "Max Discount": 0.175,
-              "MIN": 3780,
-              "MAX": 3465,
-              "SHOPEE": "",
-              "Image": "https://www.rcmart.com/image/cache/product/00038653/00038653-pandora-rc-pab-2132-000-1100x1100.jpeg",
-              "Sold QTY": 0,
-              "Available QTY": 1,
-              "Type": "wheel"
-            },
-            {
-              "BRAND": "PANDORA",
-              "CODE": "PD/PAB-133",
-              "NAME": "NISSAN R35 GT-R WING",
-              "QTY": 1,
-              "P PRICE": 3800,
-              "UNIT": "PC",
-              "PRICE/PC": 3800,
-              "Max Discount": 0.15,
-              "MIN": 3230,
-              "MAX": 3230,
-              "SHOPEE": "",
-              "Image": "https://www.rcmart.com/image/cache/product/00038653/00038653-pandora-rc-pab-2132-000-1100x1100.jpeg",
-              "Sold QTY": 0,
-              "Available QTY": 1,
-              "Type": "wing"
-            },
-            // Add more products here...
-          ],
+          products: [], // This will hold the product data fetched from the API
           selectedBrand: '',
           selectedType: '',
           filteredProducts: []
@@ -142,11 +106,22 @@
             const matchesType = this.selectedType ? product.Type === this.selectedType : true;
             return matchesBrand && matchesType;
           });
+        },
+        async fetchProducts() {
+          const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ef6aC85xcqnvKgfVbcsljfFMgNfnvDPxhgLlkgElUkLQ_W20zYJJ2eZG0tv8_JOxrewN7A9nfTmIsinlTb-p0eQ9Hs87h9igm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAnug2zSbyuKlhELAPielVN00AZj9sYZgaQT4CCPYgAdv7P-pyB2jvy9TsWiES0b6D4-ZhHlBPV2tRbcZTfeZgypBOME7-uH0wE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo"; // Replace with your API endpoint
+          try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error("Failed to fetch data");
+            this.products = await response.json();
+            this.filteredProducts = this.products; // Initialize with all products
+          } catch (error) {
+            console.error("Error fetching product data:", error);
+          }
         }
       },
       mounted() {
-        // Initialize filtered products when the app is loaded
-        this.filteredProducts = this.products;
+        // Fetch products when the component is mounted
+        this.fetchProducts();
       }
     }).mount("#app");
   </script>
