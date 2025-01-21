@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Storefront Menu with Vue</title>
+  <title>Storefront Menu with Vue and Filters</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <style>
     body {
@@ -11,53 +11,68 @@
       margin: 20px;
       padding: 0;
     }
-    .menu {
+    .product-container {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
-    .menu-item {
+    .product-card {
       border: 1px solid #ddd;
       border-radius: 5px;
       padding: 10px;
-      width: 200px;
+      width: 250px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
     }
-    .menu-item h3 {
-      margin: 0 0 10px;
+    .product-card img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
     }
-    .menu-item p {
+    .filter-container {
+      margin-bottom: 20px;
+    }
+    .filter-container select {
+      padding: 5px;
+      margin-right: 10px;
+    }
+    .product-card h3 {
+      margin: 10px 0;
+    }
+    .product-card p {
       margin: 5px 0;
     }
-    .menu-item .price {
+    .product-card .price {
       font-weight: bold;
       color: #28a745;
-    }
-    .category {
-      margin-bottom: 20px;
-      font-size: 1.5em;
-      color: #333;
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <h1>Storefront Menu</h1>
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">{{ error }}</div>
-    <div v-else>
-      <div v-for="category in categories" :key="category">
-        <h2 class="category">{{ category }}</h2>
-        <div class="menu">
-          <div 
-            class="menu-item" 
-            v-for="item in filteredMenu(category)" 
-            :key="item.name">
-            <h3>{{ item.name }}</h3>
-            <p class="price">{{ item.price }}</p>
-            <p>{{ item.description }}</p>
-          </div>
-        </div>
+    <h1>Product Catalog</h1>
+    
+    <!-- Filters -->
+    <div class="filter-container">
+      <select v-model="selectedBrand" @change="filterProducts">
+        <option value="">All Brands</option>
+        <option v-for="brand in uniqueBrands" :key="brand" :value="brand">{{ brand }}</option>
+      </select>
+      <select v-model="selectedType" @change="filterProducts">
+        <option value="">All Types</option>
+        <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <!-- Product List -->
+    <div class="product-container">
+      <div v-for="product in filteredProducts" :key="product.CODE" class="product-card">
+        <img :src="product.Image" alt="Product Image">
+        <h3>{{ product.NAME }}</h3>
+        <p><strong>Brand:</strong> {{ product.BRAND }}</p>
+        <p><strong>Code:</strong> {{ product.CODE }}</p>
+        <p><strong>Available Quantity:</strong> {{ product["Available QTY"] }}</p>
+        <p class="price">{{ product["PRICE/PC"] | currency }}</p>
       </div>
     </div>
   </div>
@@ -68,38 +83,70 @@
     createApp({
       data() {
         return {
-          menu: [],
-          loading: true,
-          error: null
+          products: [
+            {
+              "BRAND": "PANDORA",
+              "CODE": "PD/PAB-132",
+              "NAME": "NISSAN R35 GT-R BODY SHELL",
+              "QTY": 1,
+              "P PRICE": 4200,
+              "UNIT": "PC",
+              "PRICE/PC": 4200,
+              "Max Discount": 0.175,
+              "MIN": 3780,
+              "MAX": 3465,
+              "SHOPEE": "",
+              "Image": "https://www.rcmart.com/image/cache/product/00038653/00038653-pandora-rc-pab-2132-000-1100x1100.jpeg",
+              "Sold QTY": 0,
+              "Available QTY": 1,
+              "Type": "wheel"
+            },
+            {
+              "BRAND": "PANDORA",
+              "CODE": "PD/PAB-133",
+              "NAME": "NISSAN R35 GT-R WING",
+              "QTY": 1,
+              "P PRICE": 3800,
+              "UNIT": "PC",
+              "PRICE/PC": 3800,
+              "Max Discount": 0.15,
+              "MIN": 3230,
+              "MAX": 3230,
+              "SHOPEE": "",
+              "Image": "https://www.rcmart.com/image/cache/product/00038653/00038653-pandora-rc-pab-2132-000-1100x1100.jpeg",
+              "Sold QTY": 0,
+              "Available QTY": 1,
+              "Type": "wing"
+            },
+            // Add more products here...
+          ],
+          selectedBrand: '',
+          selectedType: '',
+          filteredProducts: []
         };
       },
       computed: {
-        categories() {
-          // Extract unique categories from the menu
-          return [...new Set(this.menu.map(item => item.category))];
+        // Get unique brands for the filter dropdown
+        uniqueBrands() {
+          return [...new Set(this.products.map(product => product.BRAND))];
+        },
+        // Get unique types for the filter dropdown
+        uniqueTypes() {
+          return [...new Set(this.products.map(product => product.Type))];
         }
       },
       methods: {
-        filteredMenu(category) {
-          // Filter menu items by category
-          return this.menu.filter(item => item.category === category);
-        },
-        async fetchMenu() {
-          const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ef6aC85xcqnvKgfVbcsljfFMgNfnvDPxhgLlkgElUkLQ_W20zYJJ2eZG0tv8_JOxrewN7A9nfTmIsinlTb-p0eQ9Hs87h9igm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAnug2zSbyuKlhELAPielVN00AZj9sYZgaQT4CCPYgAdv7P-pyB2jvy9TsWiES0b6D4-ZhHlBPV2tRbcZTfeZgypBOME7-uH0wE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo"; // Replace with your API URL
-          try {
-            const response = await fetch(apiUrl);
-            if (!response.ok) throw new Error("Failed to fetch data");
-            this.menu = await response.json();
-          } catch (error) {
-            this.error = error.message;
-          } finally {
-            this.loading = false;
-          }
+        filterProducts() {
+          this.filteredProducts = this.products.filter(product => {
+            const matchesBrand = this.selectedBrand ? product.BRAND === this.selectedBrand : true;
+            const matchesType = this.selectedType ? product.Type === this.selectedType : true;
+            return matchesBrand && matchesType;
+          });
         }
       },
       mounted() {
-        // Fetch the menu when the component is mounted
-        this.fetchMenu();
+        // Initialize filtered products when the app is loaded
+        this.filteredProducts = this.products;
       }
     }).mount("#app");
   </script>
