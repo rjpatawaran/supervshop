@@ -51,7 +51,7 @@
 <body>
   <div id="app">
     <h1>Product Catalog</h1>
-    
+
     <!-- Filters -->
     <div class="filter-container">
       <select v-model="selectedBrand" @change="filterProducts">
@@ -62,17 +62,24 @@
         <option value="">All Types</option>
         <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type }}</option>
       </select>
+      <select v-model="sortBy" @change="filterProducts">
+        <option value="nameAsc">Name (A-Z)</option>
+        <option value="nameDesc">Name (Z-A)</option>
+        <option value="priceAsc">Price (Low to High)</option>
+        <option value="priceDesc">Price (High to Low)</option>
+      </select>
     </div>
 
     <!-- Product List -->
     <div class="product-container">
       <div v-for="product in filteredProducts" :key="product.CODE" class="product-card">
-        <img :src="product.Image" alt="Product Image">
+        <img :src="product.Image || 'https://placehold.co/250x250'" alt="Product Image">
         <h3>{{ product.NAME }}</h3>
         <p><strong>Brand:</strong> {{ product.BRAND }}</p>
         <p><strong>Code:</strong> {{ product.CODE }}</p>
         <p><strong>Available Quantity:</strong> {{ product["Available QTY"] }}</p>
-        <p class="price">{{ product["PRICE/PC"] | currency }}</p>
+        <br/>
+        <p class="price">₱{{ product["PRICE/PC"] }}</p>
       </div>
     </div>
   </div>
@@ -86,34 +93,65 @@
           products: [], // This will hold the product data fetched from the API
           selectedBrand: '',
           selectedType: '',
+          sortBy: 'nameAsc', // Set default sort to name ascending
           filteredProducts: []
         };
       },
       computed: {
         // Get unique brands for the filter dropdown
         uniqueBrands() {
-          return [...new Set(this.products.map(product => product.BRAND))];
+          // Only return unique brands if products are populated
+          return this.products.length > 0 ? [...new Set(this.products.map(product => product.BRAND))] : [];
         },
         // Get unique types for the filter dropdown
         uniqueTypes() {
-          return [...new Set(this.products.map(product => product.Type))];
+          // Only return unique types if products are populated
+          return this.products.length > 0 ? [...new Set(this.products.map(product => product.Type))] : [];
         }
       },
       methods: {
         filterProducts() {
-          this.filteredProducts = this.products.filter(product => {
-            const matchesBrand = this.selectedBrand ? product.BRAND === this.selectedBrand : true;
-            const matchesType = this.selectedType ? product.Type === this.selectedType : true;
-            return matchesBrand && matchesType;
-          });
+          if (this.products.length > 0) {
+            let filtered = this.products.filter(product => {
+              const matchesBrand = this.selectedBrand ? product.BRAND === this.selectedBrand : true;
+              const matchesType = this.selectedType ? product.Type === this.selectedType : true;
+              return matchesBrand && matchesType;
+            });
+
+            // Sort the filtered products
+            switch (this.sortBy) {
+              case 'nameAsc':
+                filtered.sort((a, b) => a.NAME.localeCompare(b.NAME));
+                break;
+              case 'nameDesc':
+                filtered.sort((a, b) => b.NAME.localeCompare(a.NAME));
+                break;
+              case 'priceAsc':
+                filtered.sort((a, b) => parseFloat(a["PRICE/PC"]) - parseFloat(b["PRICE/PC"]));
+                break;
+              case 'priceDesc':
+                filtered.sort((a, b) => parseFloat(b["PRICE/PC"]) - parseFloat(a["PRICE/PC"]));
+                break;
+            }
+
+            this.filteredProducts = filtered;
+          }
         },
         async fetchProducts() {
           const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ef6aC85xcqnvKgfVbcsljfFMgNfnvDPxhgLlkgElUkLQ_W20zYJJ2eZG0tv8_JOxrewN7A9nfTmIsinlTb-p0eQ9Hs87h9igm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAnug2zSbyuKlhELAPielVN00AZj9sYZgaQT4CCPYgAdv7P-pyB2jvy9TsWiES0b6D4-ZhHlBPV2tRbcZTfeZgypBOME7-uH0wE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo"; // Replace with your API endpoint
           try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error("Failed to fetch data");
-            this.products = await response.json();
-            this.filteredProducts = this.products; // Initialize with all products
+            let data = await response.json();
+            data = data.filter(row => row !== null && row["PRICE/PC"] && Object.values(row).some(value => value !== null))
+            console.log(data)
+            // Ensure that the data is valid and an array before updating products
+            if (Array.isArray(data)) {
+              this.products = data;
+              this.filterProducts(); // This will apply the default sort
+            } else {
+              console.error("API returned invalid data format");
+            }
           } catch (error) {
             console.error("Error fetching product data:", error);
           }
