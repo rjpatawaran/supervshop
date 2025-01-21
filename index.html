@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Storefront Menu with Vue and Filters</title>
+  <title>SuperV Storefront</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <style>
     body {
@@ -12,45 +12,178 @@
       padding: 0;
     }
     .product-container {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
+      width: 100%;
     }
     .product-card {
       border: 1px solid #ddd;
       border-radius: 5px;
       padding: 10px;
-      width: 250px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       text-align: center;
+      background: white;
     }
     .product-card img {
       width: 100%;
       height: auto;
       margin-bottom: 10px;
+      max-width: 250px;
     }
     .filter-container {
       margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .filter-container select {
-      padding: 5px;
-      margin-right: 10px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      flex: 1;
+      min-width: 150px;
     }
     .product-card h3 {
       margin: 10px 0;
+      font-size: 1rem;
     }
     .product-card p {
       margin: 5px 0;
+      font-size: 0.9rem;
     }
     .product-card .price {
       font-weight: bold;
       color: #28a745;
+      font-size: 1.2rem;
+    }
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+    .loader {
+      width: 50px;
+      height: 50px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      body {
+        margin: 10px;
+      }
+      .product-container {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+      }
+      .product-card {
+        padding: 8px;
+      }
+      .product-card h3 {
+        font-size: 0.9rem;
+      }
+      .product-card p {
+        font-size: 0.8rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 10px 0;
+      }
+    }
+
+    /* Small phones */
+    @media (max-width: 375px) {
+      .product-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+      }
+      .product-card {
+        padding: 6px;
+      }
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .modal-content img {
+      max-width: 100%;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+
+    .close-button {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: white;
+      font-size: 30px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 5px;
+    }
+
+    .product-card img {
+      cursor: pointer;
+    }
+
+    .search-container {
+      margin-bottom: 20px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .search-container input:focus {
+      outline: none;
+      border-color: #28a745;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .search-container input {
+        padding: 8px;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <h1>Product Catalog</h1>
+    <h1>SuperV Products</h1>
+
+    <!-- Search bar -->
+    <div class="search-container">
+      <input
+        type="text"
+        v-model="searchQuery"
+        @input="filterProducts"
+        placeholder="Search by name or code..."
+      >
+    </div>
 
     <!-- Filters -->
     <div class="filter-container">
@@ -60,7 +193,7 @@
       </select>
       <select v-model="selectedType" @change="filterProducts">
         <option value="">All Types</option>
-        <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type }}</option>
+        <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type[0].toUpperCase() + type.slice(1).toLowerCase() }}</option>
       </select>
       <select v-model="sortBy" @change="filterProducts">
         <option value="nameAsc">Name (A-Z)</option>
@@ -70,16 +203,33 @@
       </select>
     </div>
 
+    <!-- Loading indicator -->
+    <div v-if="isLoading" class="loader-container">
+      <img class="loader" src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="Loading...">
+    </div>
+
     <!-- Product List -->
-    <div class="product-container">
+    <div v-else class="product-container">
       <div v-for="product in filteredProducts" :key="product.CODE" class="product-card">
-        <img :src="product.Image || 'https://placehold.co/250x250'" alt="Product Image">
+        <img
+          :src="product.Image || 'https://placehold.co/250x250'"
+          alt="Product Image"
+          @click="zoomImage(product.Image || 'https://placehold.co/250x250')"
+        >
         <h3>{{ product.NAME }}</h3>
         <p><strong>Brand:</strong> {{ product.BRAND }}</p>
         <p><strong>Code:</strong> {{ product.CODE }}</p>
         <p><strong>Available Quantity:</strong> {{ product["Available QTY"] }}</p>
         <br/>
         <p class="price">₱{{ product["PRICE/PC"] }}</p>
+      </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div v-if="selectedImage" class="modal-overlay" @click="selectedImage = null">
+      <div class="modal-content">
+        <button class="close-button" @click="selectedImage = null">&times;</button>
+        <img :src="selectedImage" alt="Zoomed Product Image">
       </div>
     </div>
   </div>
@@ -94,28 +244,59 @@
           selectedBrand: '',
           selectedType: '',
           sortBy: 'nameAsc', // Set default sort to name ascending
-          filteredProducts: []
+          filteredProducts: [],
+          isLoading: true, // Add this line
+          selectedImage: null, // Add this line
+          searchQuery: '', // Add this line
         };
       },
       computed: {
-        // Get unique brands for the filter dropdown
+        // Update uniqueBrands to filter based on selected type
         uniqueBrands() {
-          // Only return unique brands if products are populated
-          return this.products.length > 0 ? [...new Set(this.products.map(product => product.BRAND))] : [];
+          if (!this.products.length) return [];
+
+          let filteredProducts = this.products;
+          if (this.selectedType) {
+            filteredProducts = this.products.filter(product => product.Type === this.selectedType);
+          }
+          return [...new Set(filteredProducts.map(product => product.BRAND))].sort();
         },
-        // Get unique types for the filter dropdown
+
+        // Update uniqueTypes to filter based on selected brand
         uniqueTypes() {
-          // Only return unique types if products are populated
-          return this.products.length > 0 ? [...new Set(this.products.map(product => product.Type))] : [];
+          if (!this.products.length) return [];
+
+          let filteredProducts = this.products;
+          if (this.selectedBrand) {
+            filteredProducts = this.products.filter(product => product.BRAND === this.selectedBrand);
+          }
+          return [...new Set(filteredProducts.map(product => product.Type))].sort();
         }
       },
       methods: {
         filterProducts() {
           if (this.products.length > 0) {
+            // Check if selected brand is still valid for current type filter
+            if (this.selectedBrand && this.selectedType) {
+              const validBrandForType = this.products.some(product =>
+                product.BRAND === this.selectedBrand && product.Type === this.selectedType
+              );
+              if (!validBrandForType) {
+                this.selectedBrand = '';
+              }
+            }
+
             let filtered = this.products.filter(product => {
               const matchesBrand = this.selectedBrand ? product.BRAND === this.selectedBrand : true;
               const matchesType = this.selectedType ? product.Type === this.selectedType : true;
-              return matchesBrand && matchesType;
+
+              // Add search query filtering with code type handling
+              const searchLower = this.searchQuery.toLowerCase();
+              const matchesSearch = !this.searchQuery ||
+                product.NAME.toLowerCase().includes(searchLower) ||
+                String(product.CODE).toLowerCase().includes(searchLower);
+
+              return matchesBrand && matchesType && matchesSearch;
             });
 
             // Sort the filtered products
@@ -138,6 +319,7 @@
           }
         },
         async fetchProducts() {
+          this.isLoading = true;
           const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ef6aC85xcqnvKgfVbcsljfFMgNfnvDPxhgLlkgElUkLQ_W20zYJJ2eZG0tv8_JOxrewN7A9nfTmIsinlTb-p0eQ9Hs87h9igm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAnug2zSbyuKlhELAPielVN00AZj9sYZgaQT4CCPYgAdv7P-pyB2jvy9TsWiES0b6D4-ZhHlBPV2tRbcZTfeZgypBOME7-uH0wE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo"; // Replace with your API endpoint
           try {
             const response = await fetch(apiUrl);
@@ -154,7 +336,12 @@
             }
           } catch (error) {
             console.error("Error fetching product data:", error);
+          } finally {
+            this.isLoading = false;
           }
+        },
+        zoomImage(imageUrl) {
+          this.selectedImage = imageUrl;
         }
       },
       mounted() {
