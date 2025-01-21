@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Storefront Menu with Vue</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+    }
+    .menu {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .menu-item {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      width: 200px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .menu-item h3 {
+      margin: 0 0 10px;
+    }
+    .menu-item p {
+      margin: 5px 0;
+    }
+    .menu-item .price {
+      font-weight: bold;
+      color: #28a745;
+    }
+    .category {
+      margin-bottom: 20px;
+      font-size: 1.5em;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Storefront Menu</h1>
+    <div v-if="loading">Loading...</div>
+    <div v-else-if="error">{{ error }}</div>
+    <div v-else>
+      <div v-for="category in categories" :key="category">
+        <h2 class="category">{{ category }}</h2>
+        <div class="menu">
+          <div 
+            class="menu-item" 
+            v-for="item in filteredMenu(category)" 
+            :key="item.name">
+            <h3>{{ item.name }}</h3>
+            <p class="price">{{ item.price }}</p>
+            <p>{{ item.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          menu: [],
+          loading: true,
+          error: null
+        };
+      },
+      computed: {
+        categories() {
+          // Extract unique categories from the menu
+          return [...new Set(this.menu.map(item => item.category))];
+        }
+      },
+      methods: {
+        filteredMenu(category) {
+          // Filter menu items by category
+          return this.menu.filter(item => item.category === category);
+        },
+        async fetchMenu() {
+          const apiUrl = "https://script.googleusercontent.com/macros/echo?user_content_key=Ef6aC85xcqnvKgfVbcsljfFMgNfnvDPxhgLlkgElUkLQ_W20zYJJ2eZG0tv8_JOxrewN7A9nfTmIsinlTb-p0eQ9Hs87h9igm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnAnug2zSbyuKlhELAPielVN00AZj9sYZgaQT4CCPYgAdv7P-pyB2jvy9TsWiES0b6D4-ZhHlBPV2tRbcZTfeZgypBOME7-uH0wE&lib=MdvY8RReqP6jOmyy1t6LrmBCubf9OMRMo"; // Replace with your API URL
+          try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error("Failed to fetch data");
+            this.menu = await response.json();
+          } catch (error) {
+            this.error = error.message;
+          } finally {
+            this.loading = false;
+          }
+        }
+      },
+      mounted() {
+        // Fetch the menu when the component is mounted
+        this.fetchMenu();
+      }
+    }).mount("#app");
+  </script>
+</body>
+</html>
