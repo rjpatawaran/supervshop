@@ -192,6 +192,13 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      padding: 10px 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
 
     .logo {
@@ -206,6 +213,14 @@
       }
       .logo {
         width: 80px;
+      }
+      .header-right {
+        gap: 10px;
+      }
+
+      .cart-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
       }
     }
 
@@ -266,9 +281,6 @@
 
     /* Cart button styles */
     .cart-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
       background: #28a745;
       color: white;
       border: none;
@@ -278,7 +290,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      z-index: 100;
     }
 
     .cart-count {
@@ -290,52 +301,110 @@
       font-weight: bold;
     }
 
-    /* Cart modal styles */
+    /* Update cart modal styles */
     .cart-modal {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: white;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 30px;
+      padding-top: 40px;
+      border-radius: 12px;
       max-width: 90%;
-      width: 600px;
-      max-height: 80vh;
+      width: 700px;
+      max-height: 85vh;
       overflow-y: auto;
       z-index: 1001;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .cart-modal h2 {
+      font-size: 1.8em;
+      margin: 0 0 25px 0;
+      color: #28a745;
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 15px;
+    }
+
+    .empty-cart {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6c757d;
+      font-size: 1.2em;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin: 20px 0;
     }
 
     .cart-item {
       display: grid;
-      grid-template-columns: 80px 1fr auto auto;
-      gap: 15px;
+      grid-template-columns: 100px 1fr auto auto;
+      gap: 20px;
       align-items: center;
-      padding: 10px;
+      padding: 15px;
       border-bottom: 1px solid #eee;
+      transition: background-color 0.2s;
+    }
+
+    .cart-item:hover {
+      background-color: #f8f9fa;
     }
 
     .cart-item img {
-      width: 80px;
-      height: 80px;
+      width: 100px;
+      height: 100px;
       object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 5px;
     }
 
     .cart-item-details {
       text-align: left;
     }
 
+    .cart-item-details h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.1em;
+      color: #212529;
+    }
+
+    .cart-item-details p {
+      margin: 0;
+      color: #28a745;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
     .cart-item-quantity {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      background: #f8f9fa;
+      padding: 5px 10px;
+      border-radius: 20px;
     }
 
     .quantity-btn {
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 2px 8px;
+      background: white;
+      border: 1px solid #dee2e6;
+      padding: 4px 12px;
       cursor: pointer;
+      border-radius: 15px;
+      font-size: 1.1em;
+      transition: all 0.2s;
+    }
+
+    .quantity-btn:hover:not(:disabled) {
+      background: #28a745;
+      color: white;
+      border-color: #28a745;
+    }
+
+    .quantity-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .remove-btn {
@@ -343,34 +412,121 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 5px;
+      padding: 8px;
+      font-size: 1.2em;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .remove-btn:hover {
+      background: #dc3545;
+      color: white;
+    }
+
+    .cart-actions {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e9ecef;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 20px;
     }
 
     .cart-total {
-      text-align: right;
-      margin-top: 20px;
-      font-size: 1.2em;
+      font-size: 1.4em;
+      color: #212529;
+    }
+
+    .cart-total span {
+      color: #28a745;
       font-weight: bold;
     }
 
-    @media (max-width: 768px) {
-      .cart-button {
-        top: 10px;
-        right: 10px;
-        padding: 8px 15px;
-      }
+    .checkout-btn {
+      background: #0084ff;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1.1em;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
+    .checkout-btn::before {
+      content: "📱";
+    }
+
+    .checkout-btn:hover:not(:disabled) {
+      background: #006acc;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 132, 255, 0.3);
+    }
+
+    .checkout-btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    @media (max-width: 768px) {
       .cart-modal {
+        padding: 20px;
+        padding-top: 30px;
         width: 95%;
       }
 
+      .cart-modal h2 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+
       .cart-item {
-        grid-template-columns: 60px 1fr auto;
+        grid-template-columns: 70px 1fr auto;
+        gap: 15px;
+        padding: 12px;
       }
 
       .cart-item img {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
+      }
+
+      .cart-item-details h3 {
+        font-size: 1em;
+      }
+
+      .cart-actions {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .cart-total {
+        font-size: 1.2em;
+      }
+
+      .checkout-btn {
+        padding: 12px 25px;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .modal-close {
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+        width: 35px;
+        height: 35px;
       }
     }
 
@@ -420,31 +576,30 @@
       }
     }
 
-    .cart-actions {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .checkout-btn {
-      background: #0084ff; /* Facebook Messenger blue */
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 5px;
+    /* Update modal close button styles */
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #6c757d;
+      font-size: 24px;
       cursor: pointer;
-      font-size: 1.1em;
-      transition: background-color 0.2s;
+      background: none;
+      border: none;
+      padding: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
     }
 
-    .checkout-btn:hover {
-      background: #006acc;
-    }
-
-    .checkout-btn:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
+    .modal-close:hover {
+      background: #f8f9fa;
+      color: #dc3545;
+      transform: rotate(90deg);
     }
   </style>
 </head>
@@ -452,7 +607,12 @@
   <div id="app">
     <div class="header">
       <h1>SuperV <span>Drift Shop</span></h1>
-      <img src="superv_logo.jpeg" alt="SuperV Logo" class="logo">
+      <div class="header-right">
+        <button class="cart-button" @click="showCart = true">
+          🛒 Cart <span class="cart-count">{{ cartItemCount }}</span>
+        </button>
+        <img src="superv_logo.jpeg" alt="SuperV Logo" class="logo">
+      </div>
     </div>
 
     <!-- Search bar -->
@@ -522,14 +682,10 @@
       </div>
     </div>
 
-    <!-- Add this right after the header div -->
-    <button class="cart-button" @click="showCart = true">
-      🛒 Cart <span class="cart-count">{{ cartItemCount }}</span>
-    </button>
-
     <!-- Add this before the closing div#app -->
     <div v-if="showCart" class="modal-overlay" @click="showCart = false">
       <div class="cart-modal" @click.stop>
+        <button class="modal-close" @click="showCart = false">✕</button>
         <h2>Shopping Cart</h2>
         <div v-if="cartItems.length === 0" class="empty-cart">
           Your cart is empty
@@ -551,14 +707,13 @@
           </div>
           <div class="cart-actions">
             <div class="cart-total">
-              Total: ₱{{ cartTotal }}
+              Total: <span>₱{{ cartTotal }}</span>
             </div>
             <button class="checkout-btn" @click="checkout" :disabled="cartItems.length === 0">
               Checkout via Messenger
             </button>
           </div>
         </div>
-        <button class="close-button" @click="showCart = false">&times;</button>
       </div>
     </div>
 
