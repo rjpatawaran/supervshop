@@ -601,6 +601,464 @@
       color: #dc3545;
       transform: rotate(90deg);
     }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #28a745;
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      border: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 99;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      background: #218838;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .back-to-top {
+        bottom: 15px;
+        left: 15px;
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    /* Skeleton loading styles */
+    .skeleton {
+      background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 50%,
+        #f0f0f0 75%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+
+    .skeleton-card {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      background: white;
+    }
+
+    .skeleton-image {
+      width: 250px;
+      height: 250px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+
+    .skeleton-text {
+      height: 20px;
+      margin: 10px 0;
+      border-radius: 3px;
+    }
+
+    .skeleton-text.title {
+      width: 80%;
+    }
+
+    .skeleton-text.short {
+      width: 60%;
+    }
+
+    .skeleton-button {
+      height: 35px;
+      width: 100%;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .skeleton-image {
+        width: 160px;
+        height: 160px;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .skeleton-image {
+        width: 140px;
+        height: 140px;
+      }
+    }
+
+    .recently-viewed {
+      margin: 20px 0;
+      padding: 15px 0;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+    }
+
+    .recently-viewed h2 {
+      font-size: 1.2em;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .recently-viewed-container {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 10px 0;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .recently-viewed-container::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .recently-viewed-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    .recently-viewed-container::-webkit-scrollbar-thumb {
+      background: #28a745;
+      border-radius: 4px;
+    }
+
+    .recently-viewed-item {
+      flex: 0 0 200px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      background: white;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .recently-viewed-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .recently-viewed-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    .recently-viewed-item h3 {
+      font-size: 0.9em;
+      margin: 8px 0;
+      color: #333;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .recently-viewed-item p {
+      color: #28a745;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    @media (max-width: 768px) {
+      .recently-viewed-item {
+        flex: 0 0 160px;
+      }
+
+      .recently-viewed-item img {
+        height: 120px;
+      }
+    }
+
+    @keyframes highlight {
+      0% { background-color: #28a74533; }
+      100% { background-color: transparent; }
+    }
+
+    .product-card.highlight {
+      animation: highlight 2s ease-out;
+    }
+
+    .section-title {
+      font-size: 1.5em;
+      color: #333;
+      margin: 25px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #28a745;
+    }
+
+    @media (max-width: 768px) {
+      .section-title {
+        font-size: 1.3em;
+        margin: 20px 0 15px;
+      }
+    }
+
+    /* Mini cart preview styles */
+    .cart-preview {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 300px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      padding: 15px;
+      margin-top: 10px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      max-height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-preview::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      right: 20px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      transform: rotate(45deg);
+      box-shadow: -2px -2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .cart-button-container {
+      position: relative;
+    }
+
+    .cart-button-container:hover .cart-preview {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .preview-items-container {
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #28a745 #f1f1f1;
+    }
+
+    .preview-items-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .preview-items-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    .preview-items-container::-webkit-scrollbar-thumb {
+      background: #28a745;
+      border-radius: 3px;
+    }
+
+    .preview-item {
+      display: grid;
+      grid-template-columns: 50px 1fr auto;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9em;
+    }
+
+    .preview-item:last-child {
+      border-bottom: none;
+    }
+
+    .preview-item img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    .preview-item-details {
+      overflow: hidden;
+    }
+
+    .preview-item-details h4 {
+      margin: 0;
+      font-size: 0.9em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preview-item-details p {
+      margin: 2px 0;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .preview-quantity {
+      color: #6c757d;
+      font-size: 0.9em;
+    }
+
+    .preview-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      margin-top: 10px;
+      border-top: 2px solid #eee;
+      font-weight: bold;
+    }
+
+    .preview-empty {
+      text-align: center;
+      color: #6c757d;
+      padding: 20px 0;
+    }
+
+    /* Clear all button styles */
+    .clear-cart {
+      background: none;
+      border: none;
+      color: #dc3545;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+      transition: all 0.2s;
+    }
+
+    .clear-cart:hover {
+      color: #bd2130;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .cart-preview {
+        display: none; /* Hide preview on mobile */
+      }
+    }
+
+    .recently-viewed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .clear-recent {
+      background: none;
+      border: none;
+      color: #dc3545;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+
+    .clear-recent:hover {
+      background: #dc354510;
+      color: #bd2130;
+    }
+
+    .multiselect {
+      position: relative;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .multiselect-header {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+    }
+
+    .multiselect-content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 4px;
+      max-height: 300px;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .multiselect-search {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .multiselect-search input {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .multiselect-options {
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .multiselect-option:hover {
+      background: #f8f9fa;
+    }
+
+    .arrow {
+      font-size: 0.8em;
+      color: #666;
+    }
   </style>
 </head>
 <body>
@@ -608,9 +1066,33 @@
     <div class="header">
       <h1>SuperV <span>Drift Shop</span></h1>
       <div class="header-right">
-        <button class="cart-button" @click="showCart = true">
-          🛒 Cart <span class="cart-count">{{ cartItemCount }}</span>
-        </button>
+        <div class="cart-button-container">
+          <button class="cart-button" @click="showCart = true">
+            🛒 Cart <span class="cart-count">{{ cartItemCount }}</span>
+          </button>
+          <!-- Add mini cart preview -->
+          <div class="cart-preview" v-if="cartItems.length > 0">
+            <div class="preview-items-container">
+              <div class="preview-item" v-for="item in cartPreviewItems" :key="item.product.CODE">
+                <img :src="item.product.Image || 'https://placehold.co/250x250'" :alt="item.product.NAME">
+                <div class="preview-item-details">
+                  <h4>{{ item.product.NAME }}</h4>
+                  <p>₱{{ item.product.MIN }}</p>
+                </div>
+                <span class="preview-quantity">x{{ item.quantity }}</span>
+              </div>
+            </div>
+            <div class="preview-total">
+              <span>Total:</span>
+              <span>₱{{ cartTotal }}</span>
+            </div>
+          </div>
+          <div class="cart-preview" v-else>
+            <div class="preview-empty">
+              Your cart is empty
+            </div>
+          </div>
+        </div>
         <img src="superv_logo.jpeg" alt="SuperV Logo" class="logo">
       </div>
     </div>
@@ -627,14 +1109,74 @@
 
     <!-- Filters -->
     <div class="filter-container">
-      <select v-model="selectedBrand" @change="filterProducts">
-        <option value="">All Brands</option>
-        <option v-for="brand in uniqueBrands" :key="brand" :value="brand">{{ brand }}</option>
+      <!-- Availability filter -->
+      <select v-model="availabilityFilter" @change="filterProducts">
+        <option value="all">All Items</option>
+        <option value="inStock">In Stock</option>
+        <option value="outOfStock">Out of Stock</option>
       </select>
-      <select v-model="selectedType" @change="filterProducts">
-        <option value="">All Types</option>
-        <option v-for="type in uniqueTypes" :key="type" :value="type">{{ type[0].toUpperCase() + type.slice(1).toLowerCase() }}</option>
-      </select>
+
+      <!-- Replace single brand select with multiple select -->
+      <div class="multiselect">
+        <div class="multiselect-header" @click.stop="toggleBrandDropdown">
+          <span>{{ selectedBrands.length ? `${selectedBrands.length} Brands Selected` : 'All Brands' }}</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="multiselect-content" v-if="showBrandDropdown" @click.stop>
+          <div class="multiselect-search">
+            <input
+              type="text"
+              v-model="brandSearch"
+              placeholder="Search brands..."
+              @click.stop
+            >
+          </div>
+          <div class="multiselect-options" @click.stop>
+            <label v-for="brand in filteredBrands" :key="brand" class="multiselect-option">
+              <input
+                type="checkbox"
+                :value="brand"
+                v-model="selectedBrands"
+                @change="filterProducts"
+                @click.stop
+              >
+              {{ brand }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Replace single type select with multiple select -->
+      <div class="multiselect">
+        <div class="multiselect-header" @click.stop="toggleTypeDropdown">
+          <span>{{ selectedTypes.length ? `${selectedTypes.length} Types Selected` : 'All Types' }}</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="multiselect-content" v-if="showTypeDropdown" @click.stop>
+          <div class="multiselect-search">
+            <input
+              type="text"
+              v-model="typeSearch"
+              placeholder="Search types..."
+              @click.stop
+            >
+          </div>
+          <div class="multiselect-options" @click.stop>
+            <label v-for="type in filteredTypes" :key="type" class="multiselect-option">
+              <input
+                type="checkbox"
+                :value="type"
+                v-model="selectedTypes"
+                @change="filterProducts"
+                @click.stop
+              >
+              {{ type[0].toUpperCase() + type.slice(1).toLowerCase() }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Keep the sort select -->
       <select v-model="sortBy" @change="filterProducts">
         <option value="nameAsc">Name (A-Z)</option>
         <option value="nameDesc">Name (Z-A)</option>
@@ -643,21 +1185,56 @@
       </select>
     </div>
 
+    <!-- Update the Recently Viewed section with a clear button -->
+    <div v-if="recentlyViewed.length > 0" class="recently-viewed">
+      <div class="recently-viewed-header">
+        <h2>Recently Viewed</h2>
+        <button class="clear-recent" @click="clearRecentlyViewed">
+          🗑️ Clear History
+        </button>
+      </div>
+      <div class="recently-viewed-container">
+        <div
+          v-for="product in recentlyViewed"
+          :key="product.CODE"
+          class="recently-viewed-item"
+          @click="scrollToProduct(product.CODE)"
+        >
+          <img :src="product.Image || 'https://placehold.co/250x250'" :alt="product.NAME">
+          <h3>{{ product.NAME }}</h3>
+          <p>₱{{ product.MIN }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Replace the static section title with a dynamic one -->
+    <h2 class="section-title">
+      {{ sectionTitle }}
+    </h2>
+
     <!-- Loading indicator -->
-    <div v-if="isLoading" class="loader-container">
-      <img class="loader" src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" alt="Loading...">
+    <div v-if="isLoading" class="product-container">
+      <div v-for="n in 8" :key="n" class="skeleton-card">
+        <div class="skeleton skeleton-image"></div>
+        <div class="skeleton skeleton-text title"></div>
+        <div class="skeleton skeleton-text short"></div>
+        <div class="skeleton skeleton-text short"></div>
+        <div class="skeleton skeleton-text"></div>
+        <div class="skeleton skeleton-button"></div>
+      </div>
     </div>
 
     <!-- Product List -->
     <div v-else class="product-container">
-      <div v-for="product in filteredProducts" :key="product.CODE" class="product-card" :class="{ 'out-of-stock': product['Available QTY'] <= 0 }">
+
+      <div v-for="product in filteredProducts" :key="product.CODE" class="product-card" :class="{ 'out-of-stock': product['Available QTY'] <= 0 }" :data-product-code="product.CODE">
         <div v-if="product['Available QTY'] <= 0" class="out-of-stock-label">
           Out of Stock
         </div>
         <img
           :src="product.Image || 'https://placehold.co/250x250'"
           alt="Product Image"
-          @click="zoomImage(product.Image || 'https://placehold.co/250x250')"
+          @click="zoomImage(product.Image || 'https://placehold.co/250x250', product)"
         >
         <h3>{{ product.NAME }}</h3>
         <p><strong>Brand:</strong> {{ product.BRAND }}</p>
@@ -691,6 +1268,9 @@
           Your cart is empty
         </div>
         <div v-else>
+          <button class="clear-cart" @click="clearCart">
+            🗑️ Clear All Items
+          </button>
           <div v-for="(item, index) in cartItems" :key="index" class="cart-item">
             <img :src="item.product.Image || 'https://placehold.co/250x250'" :alt="item.product.NAME">
             <div class="cart-item-details">
@@ -727,6 +1307,15 @@
         {{ toast.message }}
       </div>
     </div>
+
+    <button
+      class="back-to-top"
+      :class="{ visible: showBackToTop }"
+      @click="scrollToTop"
+      aria-label="Back to top"
+    >
+      ↑
+    </button>
   </div>
 
   <script>
@@ -747,29 +1336,74 @@
           showCart: false,
           toasts: [], // Array to hold toast notifications
           fbPageId: '61570552932610', // Replace with your Facebook Page ID
+          showBackToTop: false,
+          recentlyViewed: [],
+          maxRecentlyViewed: 10, // Maximum number of recently viewed items to store
+          selectedBrands: [],
+          showBrandDropdown: false,
+          brandSearch: '',
+          selectedTypes: [],
+          showTypeDropdown: false,
+          typeSearch: '',
+          availabilityFilter: 'all',
         };
       },
       computed: {
-        // Update uniqueBrands to filter based on selected type
+        // Update uniqueBrands to not filter based on type
         uniqueBrands() {
           if (!this.products.length) return [];
-
-          let filteredProducts = this.products;
-          if (this.selectedType) {
-            filteredProducts = this.products.filter(product => product.Type === this.selectedType);
-          }
-          return [...new Set(filteredProducts.map(product => product.BRAND))].sort();
+          return [...new Set(this.products.map(product => product.BRAND))].sort();
         },
 
-        // Update uniqueTypes to filter based on selected brand
+        // Update uniqueTypes to not filter based on brand
         uniqueTypes() {
           if (!this.products.length) return [];
+          return [...new Set(this.products.map(product => product.Type))].sort();
+        },
 
-          let filteredProducts = this.products;
-          if (this.selectedBrand) {
-            filteredProducts = this.products.filter(product => product.BRAND === this.selectedBrand);
+        filteredBrands() {
+          return this.uniqueBrands.filter(brand =>
+            brand.toLowerCase().includes(this.brandSearch.toLowerCase())
+          );
+        },
+
+        filteredTypes() {
+          return this.uniqueTypes.filter(type =>
+            type.toLowerCase().includes(this.typeSearch.toLowerCase())
+          );
+        },
+
+        // Update section title for multiple selections
+        sectionTitle() {
+          if (this.searchQuery) {
+            return `Search Results for "${this.searchQuery}"`;
           }
-          return [...new Set(filteredProducts.map(product => product.Type))].sort();
+
+          const parts = [];
+
+          if (this.selectedBrands.length) {
+            parts.push(this.selectedBrands.length === 1 ?
+              this.selectedBrands[0] :
+              `${this.selectedBrands.length} Brands`
+            );
+          }
+
+          if (this.selectedTypes.length) {
+            parts.push(this.selectedTypes.length === 1 ?
+              this.selectedTypes[0][0].toUpperCase() + this.selectedTypes[0].slice(1).toLowerCase() :
+              `${this.selectedTypes.length} Types`
+            );
+          }
+
+          if (this.availabilityFilter !== 'all') {
+            parts.push(this.availabilityFilter === 'inStock' ? 'In Stock' : 'Out of Stock');
+          }
+
+          if (parts.length === 0) {
+            return 'All Products';
+          }
+
+          return parts.join(' - ');
         },
         cartItemCount() {
           return this.cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -778,32 +1412,32 @@
           return this.cartItems.reduce((total, item) => {
             return total + (item.product.MIN * item.quantity);
           }, 0).toFixed(2);
-        }
+        },
+        cartPreviewItems() {
+          // Return all cart items instead of just 3
+          return this.cartItems;
+        },
       },
       methods: {
         filterProducts() {
           if (this.products.length > 0) {
-            // Check if selected brand is still valid for current type filter
-            if (this.selectedBrand && this.selectedType) {
-              const validBrandForType = this.products.some(product =>
-                product.BRAND === this.selectedBrand && product.Type === this.selectedType
-              );
-              if (!validBrandForType) {
-                this.selectedBrand = '';
-              }
-            }
-
             let filtered = this.products.filter(product => {
-              const matchesBrand = this.selectedBrand ? product.BRAND === this.selectedBrand : true;
-              const matchesType = this.selectedType ? product.Type === this.selectedType : true;
+              const matchesBrands = this.selectedBrands.length === 0 ||
+                this.selectedBrands.includes(product.BRAND);
 
-              // Add search query filtering with code type handling
+              const matchesTypes = this.selectedTypes.length === 0 ||
+                this.selectedTypes.includes(product.Type);
+
+              const matchesAvailability = this.availabilityFilter === 'all' ||
+                (this.availabilityFilter === 'inStock' && product['Available QTY'] > 0) ||
+                (this.availabilityFilter === 'outOfStock' && product['Available QTY'] <= 0);
+
               const searchLower = this.searchQuery.toLowerCase();
               const matchesSearch = !this.searchQuery ||
                 product.NAME.toLowerCase().includes(searchLower) ||
                 String(product.CODE).toLowerCase().includes(searchLower);
 
-              return matchesBrand && matchesType && matchesSearch;
+              return matchesBrands && matchesTypes && matchesAvailability && matchesSearch;
             });
 
             // Sort the filtered products
@@ -846,9 +1480,11 @@
             this.isLoading = false;
           }
         },
-        zoomImage(imageUrl) {
+        zoomImage(imageUrl, product) {
           this.selectedImage = imageUrl;
-          // Add event listener when opening modal
+          if (product) {
+            this.addToRecentlyViewed(product);
+          }
           document.addEventListener('keydown', this.handleEscKey);
         },
         handleEscKey(event) {
@@ -995,14 +1631,95 @@
           this.saveCart();
           this.showCart = false;
           this.showToast('Order sent to Messenger! Please complete your order there.');
-        }
+        },
+        scrollToTop() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        },
+        handleScroll() {
+          this.showBackToTop = window.scrollY > 500;
+        },
+        scrollToProduct(productCode) {
+          const productElement = document.querySelector(`[data-product-code="${productCode}"]`);
+          if (productElement) {
+            productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add a highlight effect
+            productElement.classList.add('highlight');
+            setTimeout(() => {
+              productElement.classList.remove('highlight');
+            }, 2000);
+          }
+        },
+        addToRecentlyViewed(product) {
+          // Remove the product if it's already in the list
+          this.recentlyViewed = this.recentlyViewed.filter(p => p.CODE !== product.CODE);
+
+          // Add the product to the beginning of the array
+          this.recentlyViewed.unshift(product);
+
+          // Keep only the last N items
+          if (this.recentlyViewed.length > this.maxRecentlyViewed) {
+            this.recentlyViewed.pop();
+          }
+
+          // Save to localStorage
+          try {
+            localStorage.setItem('recentlyViewed', JSON.stringify(this.recentlyViewed));
+          } catch (error) {
+            console.error('Error saving recently viewed:', error);
+          }
+        },
+        loadRecentlyViewed() {
+          try {
+            const saved = localStorage.getItem('recentlyViewed');
+            if (saved) {
+              this.recentlyViewed = JSON.parse(saved);
+            }
+          } catch (error) {
+            console.error('Error loading recently viewed:', error);
+            this.recentlyViewed = [];
+          }
+        },
+        clearCart() {
+          if (confirm('Are you sure you want to clear all items from your cart?')) {
+            this.cartItems = [];
+            this.saveCart();
+            this.showToast('Cart has been cleared');
+          }
+        },
+        clearRecentlyViewed() {
+          if (confirm('Are you sure you want to clear your recently viewed items?')) {
+            this.recentlyViewed = [];
+            localStorage.removeItem('recentlyViewed');
+            this.showToast('Recently viewed history has been cleared');
+          }
+        },
+        toggleBrandDropdown() {
+          this.showBrandDropdown = !this.showBrandDropdown;
+          this.showTypeDropdown = false;
+        },
+        toggleTypeDropdown() {
+          this.showTypeDropdown = !this.showTypeDropdown;
+          this.showBrandDropdown = false;
+        },
       },
       mounted() {
         this.fetchProducts();
+        this.loadRecentlyViewed();
+        window.addEventListener('scroll', this.handleScroll);
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+          this.showBrandDropdown = false;
+          this.showTypeDropdown = false;
+        });
       },
-      // Clean up event listener when component is destroyed
       unmounted() {
         document.removeEventListener('keydown', this.handleEscKey);
+        window.removeEventListener('scroll', this.handleScroll);
+        document.removeEventListener('click');
       }
     }).mount("#app");
   </script>
