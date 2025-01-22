@@ -218,7 +218,7 @@
     /* Update the span style for Drift Shop text */
     .header h1 span {
       font-family: 'Smooch Sans', sans-serif;
-      font-size: 1.1em;
+      font-size: 0.8em;
       margin-left: 8px;
       color: #333;
       font-weight: 700;
@@ -230,7 +230,7 @@
         font-size: 1.8rem;
       }
       .header h1 span {
-        font-size: 1em;
+        font-size: 0.7em;
         display: block;
         margin-left: 0;
         margin-top: 4px;
@@ -325,7 +325,7 @@
           </span>
         </p>
         <br/>
-        <p class="price">₱{{ product["PRICE/PC"] }}</p>
+        <p class="price">₱{{ product["MIN"] }}</p>
       </div>
     </div>
 
@@ -412,10 +412,10 @@
                 filtered.sort((a, b) => b.NAME.localeCompare(a.NAME));
                 break;
               case 'priceAsc':
-                filtered.sort((a, b) => parseFloat(a["PRICE/PC"]) - parseFloat(b["PRICE/PC"]));
+                filtered.sort((a, b) => parseFloat(a["MIN"]) - parseFloat(b["MIN"]));
                 break;
               case 'priceDesc':
-                filtered.sort((a, b) => parseFloat(b["PRICE/PC"]) - parseFloat(a["PRICE/PC"]));
+                filtered.sort((a, b) => parseFloat(b["MIN"]) - parseFloat(a["MIN"]));
                 break;
             }
 
@@ -429,7 +429,7 @@
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error("Failed to fetch data");
             let data = await response.json();
-            data = data.filter(row => row !== null && row["PRICE/PC"] && Object.values(row).some(value => value !== null))
+            data = data.filter(row => row !== null && row["MIN"] && Object.values(row).some(value => value !== null))
             console.log(data)
             // Ensure that the data is valid and an array before updating products
             if (Array.isArray(data)) {
