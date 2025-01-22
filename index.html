@@ -236,6 +236,32 @@
         margin-top: 4px;
       }
     }
+
+    .product-card.out-of-stock {
+      opacity: 0.7;
+      position: relative;
+    }
+
+    .out-of-stock-label {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(108, 117, 125, 0.9);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .out-of-stock .price {
+      color: #6c757d !important;
+    }
+
+    .quantity-warning {
+      color: #dc3545;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -280,7 +306,10 @@
 
     <!-- Product List -->
     <div v-else class="product-container">
-      <div v-for="product in filteredProducts" :key="product.CODE" class="product-card">
+      <div v-for="product in filteredProducts" :key="product.CODE" class="product-card" :class="{ 'out-of-stock': product['Available QTY'] <= 0 }">
+        <div v-if="product['Available QTY'] <= 0" class="out-of-stock-label">
+          Out of Stock
+        </div>
         <img
           :src="product.Image || 'https://placehold.co/250x250'"
           alt="Product Image"
@@ -289,7 +318,12 @@
         <h3>{{ product.NAME }}</h3>
         <p><strong>Brand:</strong> {{ product.BRAND }}</p>
         <p><strong>Code:</strong> {{ product.CODE }}</p>
-        <p><strong>Available Quantity:</strong> {{ product["Available QTY"] }}</p>
+        <p>
+          <strong>Available Quantity: </strong>
+          <span :class="{ 'quantity-warning': product['Available QTY'] <= 0 }">
+            {{ product["Available QTY"] }}
+          </span>
+        </p>
         <br/>
         <p class="price">₱{{ product["PRICE/PC"] }}</p>
       </div>
@@ -390,7 +424,7 @@
         },
         async fetchProducts() {
           this.isLoading = true;
-          const apiUrl = "https://script.google.com/macros/s/AKfycbwBPX-nEJnV8lvtwvDHjvt-vVU3OZuNk0a8OTqbk3o0Z6xt4GUC_6XJ_vY59edsc7bW/exec";
+          const apiUrl = "https://script.google.com/macros/s/AKfycbzEQM412ACRitvOKApdBOSQNSTCvKa6KgrEcmzygs_Fu61lp-9DDnyE-1EnqAzsk5Br/exec";
           try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error("Failed to fetch data");
