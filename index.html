@@ -13,6 +13,9 @@
       font-style: normal;
     }
 
+    /* Change to Smooch Sans */
+    @import url('https://fonts.googleapis.com/css2?family=Smooch+Sans:wght@700&display=swap');
+
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -33,10 +36,12 @@
       background: white;
     }
     .product-card img {
-      width: 100%;
-      height: auto;
+      width: 250px;
+      height: 250px;
       margin-bottom: 10px;
-      max-width: 250px;
+      object-fit: contain;
+      background: #f8f9fa;  /* Light gray background for empty spaces */
+      cursor: pointer;
     }
     .filter-container {
       margin-bottom: 20px;
@@ -97,6 +102,10 @@
         font-size: 1.5rem;
         margin: 10px 0;
       }
+      .product-card img {
+        width: 160px;
+        height: 160px;
+      }
     }
 
     /* Small phones */
@@ -107,6 +116,10 @@
       }
       .product-card {
         padding: 6px;
+      }
+      .product-card img {
+        width: 140px;
+        height: 140px;
       }
     }
 
@@ -146,10 +159,6 @@
       background: none;
       border: none;
       padding: 5px;
-    }
-
-    .product-card img {
-      cursor: pointer;
     }
 
     .search-container {
@@ -202,14 +211,29 @@
     /* Update header styles */
     .header h1 {
       font-family: 'Rushblade', Arial, sans-serif;
-      color: #28a745;  /* Using the same green as the price */
+      color: #28a745;
       letter-spacing: 1px;
     }
 
-    /* Adjust header font size for mobile */
+    /* Update the span style for Drift Shop text */
+    .header h1 span {
+      font-family: 'Smooch Sans', sans-serif;
+      font-size: 1.1em;
+      margin-left: 8px;
+      color: #333;
+      font-weight: 700;
+    }
+
+    /* Update mobile styles for the new font */
     @media (max-width: 768px) {
       .header h1 {
         font-size: 1.8rem;
+      }
+      .header h1 span {
+        font-size: 1em;
+        display: block;
+        margin-left: 0;
+        margin-top: 4px;
       }
     }
   </style>
@@ -217,7 +241,7 @@
 <body>
   <div id="app">
     <div class="header">
-      <h1>SuperV Drift Shop</h1>
+      <h1>SuperV <span>Drift Shop</span></h1>
       <img src="superv_logo.jpeg" alt="SuperV Logo" class="logo">
     </div>
 
@@ -272,9 +296,9 @@
     </div>
 
     <!-- Image Modal -->
-    <div v-if="selectedImage" class="modal-overlay" @click="selectedImage = null">
+    <div v-if="selectedImage" class="modal-overlay" @click="closeModal">
       <div class="modal-content">
-        <button class="close-button" @click="selectedImage = null">&times;</button>
+        <button class="close-button" @click="closeModal">&times;</button>
         <img :src="selectedImage" alt="Zoomed Product Image">
       </div>
     </div>
@@ -388,11 +412,27 @@
         },
         zoomImage(imageUrl) {
           this.selectedImage = imageUrl;
+          // Add event listener when opening modal
+          document.addEventListener('keydown', this.handleEscKey);
+        },
+        handleEscKey(event) {
+          if (event.key === 'Escape' && this.selectedImage) {
+            this.closeModal();
+          }
+        },
+        closeModal() {
+          this.selectedImage = null;
+          // Remove event listener when closing modal
+          document.removeEventListener('keydown', this.handleEscKey);
         }
       },
       mounted() {
         // Fetch products when the component is mounted
         this.fetchProducts();
+      },
+      // Clean up event listener when component is destroyed
+      unmounted() {
+        document.removeEventListener('keydown', this.handleEscKey);
       }
     }).mount("#app");
   </script>
