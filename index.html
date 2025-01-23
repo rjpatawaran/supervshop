@@ -1559,6 +1559,7 @@
           showTypeDropdown: false,
           typeSearch: '',
           availabilityFilter: 'all',
+          baseUrl: window.location.href.split('?')[0], // Get the base URL without query parameters
         };
       },
       computed: {
@@ -1926,7 +1927,7 @@
           product.showShareMenu = !product.showShareMenu;
         },
         async copyLink(product) {
-          const shareUrl = `${this.baseUrl}?product=${product.CODE}`;
+          const shareUrl = `${window.location.href.split('?')[0]}?product=${product.CODE}`;
           try {
             await navigator.clipboard.writeText(shareUrl);
             this.showToast('Link copied to clipboard!');
@@ -1936,12 +1937,12 @@
           product.showShareMenu = false;
         },
         shareToFacebook(product) {
-          const shareUrl = `${this.baseUrl}?product=${product.CODE}`;
+          const shareUrl = `${window.location.href.split('?')[0]}?product=${product.CODE}`;
           window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
           product.showShareMenu = false;
         },
         shareToMessenger(product) {
-          const shareUrl = `${this.baseUrl}?product=${product.CODE}`;
+          const shareUrl = `${window.location.href.split('?')[0]}?product=${product.CODE}`;
           const text = encodeURIComponent(`Check out ${product.NAME} - ₱${product.MIN}\n${shareUrl}`);
           window.open(`https://www.facebook.com/dialog/send?link=${encodeURIComponent(shareUrl)}&app_id=${this.fbPageId}&redirect_uri=${encodeURIComponent(shareUrl)}`);
           product.showShareMenu = false;
