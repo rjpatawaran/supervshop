@@ -6,6 +6,9 @@
   <title>SuperV Storefront</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie/src/js.cookie.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
   <style>
     @font-face {
       font-family: 'Rushblade';
@@ -14,11 +17,8 @@
       font-style: normal;
     }
 
-    /* Change to Smooch Sans */
-    @import url('https://fonts.googleapis.com/css2?family=Smooch+Sans:wght@700&display=swap');
-
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Play', sans-serif;
       margin: 20px;
       padding: 0;
     }
@@ -60,6 +60,12 @@
     .product-card h3 {
       margin: 10px 0;
       font-size: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 3.6em;
+      line-height: 1.2;
     }
     .product-card p {
       margin: 5px 0;
@@ -226,18 +232,19 @@
 
     /* Update header styles */
     .header h1 {
-      font-family: 'Rushblade', Arial, sans-serif;
+      font-family: 'Rushblade', sans-serif;
       color: #28a745;
       letter-spacing: 1px;
     }
 
     /* Update the span style for Drift Shop text */
     .header h1 span {
-      font-family: 'Smooch Sans', sans-serif;
-      font-size: 0.8em;
+      font-family: inherit;
+      font-size: 1em;
       margin-left: 8px;
       color: #333;
       font-weight: 700;
+      letter-spacing: 0;
     }
 
     /* Update mobile styles for the new font */
@@ -1010,6 +1017,13 @@
       justify-content: space-between;
       align-items: center;
       background: white;
+      font-size: 1rem;
+      color: #333;
+      height: 37px; /* Match select height */
+    }
+
+    .multiselect-header:hover {
+      border-color: #28a745;
     }
 
     .multiselect-content {
@@ -1033,9 +1047,16 @@
 
     .multiselect-search input {
       width: 100%;
-      padding: 6px;
+      padding: 6px 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .multiselect-search input:focus {
+      outline: none;
+      border-color: #28a745;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
     }
 
     .multiselect-options {
@@ -1049,15 +1070,74 @@
       gap: 8px;
       padding: 8px;
       cursor: pointer;
+      transition: background-color 0.2s;
+      color: #333;
+      font-size: 0.9rem;
     }
 
     .multiselect-option:hover {
       background: #f8f9fa;
     }
 
-    .arrow {
-      font-size: 0.8em;
+    .multiselect-option input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #28a745;
+    }
+
+    /* Match filter container styles */
+    .filter-container {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-container select,
+    .filter-container .multiselect {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    @media (max-width: 768px) {
+      .multiselect-header {
+        font-size: 0.9rem;
+        padding: 6px 8px;
+        height: 33px;
+      }
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #eee;
       color: #666;
+      font-size: 0.9em;
+    }
+
+    .footer a {
+      color: #28a745;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer a:hover {
+      color: #218838;
+      text-decoration: underline;
+    }
+
+    /* Remove the redundant font declarations since body already sets Play as default */
+    .header h1 span,
+    .cart-modal h2,
+    .section-title,
+    .recently-viewed h2,
+    .multiselect-header,
+    .multiselect-option,
+    .cart-item-details h3,
+    .product-card h3,
+    .footer {
+      font-family: inherit;
     }
   </style>
 </head>
@@ -1214,7 +1294,9 @@
 
     <!-- Loading indicator -->
     <div v-if="isLoading" class="product-container">
-      <div v-for="n in 8" :key="n" class="skeleton-card">
+      <div v-for="n in skeletonCount"
+        :key="n"
+        class="skeleton-card">
         <div class="skeleton skeleton-image"></div>
         <div class="skeleton skeleton-text title"></div>
         <div class="skeleton skeleton-text short"></div>
@@ -1316,6 +1398,10 @@
     >
       ↑
     </button>
+
+    <footer class="footer">
+      Written by <a href="https://github.com/rjpatawaran" target="_blank">RJ Patawaran</a>
+    </footer>
   </div>
 
   <script>
@@ -1324,21 +1410,21 @@
     createApp({
       data() {
         return {
-          products: [], // This will hold the product data fetched from the API
+          products: [],
           selectedBrand: '',
           selectedType: '',
-          sortBy: 'nameAsc', // Set default sort to name ascending
+          sortBy: 'nameAsc',
           filteredProducts: [],
-          isLoading: true, // Add this line
-          selectedImage: null, // Add this line
-          searchQuery: '', // Add this line
-          cartItems: [], // Will store objects with product and quantity
+          isLoading: true,
+          selectedImage: null,
+          searchQuery: '',
+          cartItems: [],
           showCart: false,
-          toasts: [], // Array to hold toast notifications
-          fbPageId: '61570552932610', // Replace with your Facebook Page ID
+          toasts: [],
+          fbPageId: '61570552932610',
           showBackToTop: false,
           recentlyViewed: [],
-          maxRecentlyViewed: 10, // Maximum number of recently viewed items to store
+          maxRecentlyViewed: 10,
           selectedBrands: [],
           showBrandDropdown: false,
           brandSearch: '',
@@ -1349,31 +1435,30 @@
         };
       },
       computed: {
-        // Update uniqueBrands to not filter based on type
+        skeletonCount() {
+          if (typeof window === 'undefined') return 6;
+          const width = window.innerWidth;
+          const cardsPerRow = width >= 768 ? Math.floor(width / 250) : Math.floor(width / 160);
+          return Math.max(cardsPerRow * 2, 4); // Ensure at least 4 skeleton cards
+        },
         uniqueBrands() {
           if (!this.products.length) return [];
           return [...new Set(this.products.map(product => product.BRAND))].sort();
         },
-
-        // Update uniqueTypes to not filter based on brand
         uniqueTypes() {
           if (!this.products.length) return [];
           return [...new Set(this.products.map(product => product.Type))].sort();
         },
-
         filteredBrands() {
           return this.uniqueBrands.filter(brand =>
             brand.toLowerCase().includes(this.brandSearch.toLowerCase())
           );
         },
-
         filteredTypes() {
           return this.uniqueTypes.filter(type =>
             type.toLowerCase().includes(this.typeSearch.toLowerCase())
           );
         },
-
-        // Update section title for multiple selections
         sectionTitle() {
           if (this.searchQuery) {
             return `Search Results for "${this.searchQuery}"`;
@@ -1414,7 +1499,6 @@
           }, 0).toFixed(2);
         },
         cartPreviewItems() {
-          // Return all cart items instead of just 3
           return this.cartItems;
         },
       },
@@ -1470,7 +1554,7 @@
             if (Array.isArray(data)) {
               this.products = data;
               this.filterProducts();
-              this.loadCart(); // Move loadCart here after products are loaded
+              this.loadCart();
             } else {
               console.error("API returned invalid data format");
             }
@@ -1577,7 +1661,7 @@
                 this.cartItems = savedCart.map(item => ({
                   product: this.products.find(p => p.CODE === item.productCode),
                   quantity: item.quantity
-                })).filter(item => item.product); // Filter out any items where product wasn't found
+                })).filter(item => item.product);
               } else {
                 // If products aren't loaded yet, wait for them
                 this.$watch(
@@ -1600,7 +1684,6 @@
           }
         },
         checkout() {
-          // Create the order message
           let message = "🛒 New Order:\n\n";
 
           // Add each item to the message
