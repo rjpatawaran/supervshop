@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SuperV Storefront</title>
+  <title>SuperV</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie/src/js.cookie.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1139,6 +1139,111 @@
     .footer {
       font-family: inherit;
     }
+
+    /* Share button styles remain the same */
+    .share-button {
+      background: none;
+      border: none;
+      color: #666;
+      padding: 8px;
+      cursor: pointer;
+      font-size: 1.1em;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .share-button:hover {
+      color: #28a745;
+    }
+
+    .share-menu {
+      position: absolute;
+      right: 0;  /* Align to right */
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 8px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 200px;
+    }
+
+    .share-menu button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border-radius: 4px;
+      color: #333;
+      text-align: left;
+    }
+
+    .share-menu button:hover {
+      background-color: #f8f9fa;
+    }
+
+    .share-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Update product card styles */
+    .product-card .actions {
+      margin-top: auto;
+      padding-top: 10px;
+      display: flex;
+      justify-content: center;  /* Center the button */
+    }
+
+    .product-card .actions button {
+      margin: 0 auto;  /* Additional centering */
+    }
+
+    /* Update share button styles */
+    .share-button {
+      background: none;
+      border: none;
+      color: #666;
+      padding: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .share-button:hover {
+      color: #28a745;
+    }
+
+    /* Update product title container */
+    .product-title-container {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 4px;
+      margin: 10px 0;
+    }
+
+    .product-title-container h3 {
+      flex: 1;
+      margin: 0;
+    }
+
+    /* Reset product card actions */
+    .product-card .actions {
+      margin-top: auto;
+      padding-top: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -1318,7 +1423,25 @@
           alt="Product Image"
           @click="zoomImage(product.Image || 'https://placehold.co/250x250', product)"
         >
-        <h3>{{ product.NAME }}</h3>
+        <div class="product-title-container">
+          <h3>{{ product.NAME }}</h3>
+          <div class="share-container">
+            <button class="share-button" @click.stop="toggleShareMenu(product)" title="Share">
+              ➡️
+            </button>
+            <div v-if="product.showShareMenu" class="share-menu" @click.stop>
+              <button @click="copyLink(product)">
+                📋 Copy Link
+              </button>
+              <button @click="shareToFacebook(product)">
+                📘 Share on Facebook
+              </button>
+              <button @click="shareToMessenger(product)">
+                💬 Share on Messenger
+              </button>
+            </div>
+          </div>
+        </div>
         <p><strong>Brand:</strong> {{ product.BRAND }}</p>
         <p><strong>Code:</strong> {{ product.CODE }}</p>
         <p>
@@ -1329,7 +1452,11 @@
         </p>
         <br/>
         <p class="price">₱{{ product["MIN"] }}</p>
-        <button @click="addToCart(product)" :disabled="product['Available QTY'] <= 0">Add to Cart</button>
+        <div class="actions">
+          <button @click="addToCart(product)" :disabled="product['Available QTY'] <= 0">
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1787,6 +1914,38 @@
           this.showTypeDropdown = !this.showTypeDropdown;
           this.showBrandDropdown = false;
         },
+        toggleShareMenu(product) {
+          // Close all other share menus
+          this.filteredProducts.forEach(p => {
+            if (p !== product) {
+              p.showShareMenu = false;
+            }
+          });
+
+          // Toggle the clicked product's share menu
+          product.showShareMenu = !product.showShareMenu;
+        },
+        async copyLink(product) {
+          const shareUrl = `${this.baseUrl}?product=${product.CODE}`;
+          try {
+            await navigator.clipboard.writeText(shareUrl);
+            this.showToast('Link copied to clipboard!');
+          } catch (err) {
+            this.showToast('Failed to copy link', true);
+          }
+          product.showShareMenu = false;
+        },
+        shareToFacebook(product) {
+          const shareUrl = `${this.baseUrl}?product=${product.CODE}`;
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
+          product.showShareMenu = false;
+        },
+        shareToMessenger(product) {
+          const shareUrl = `${this.baseUrl}?product=${product.CODE}`;
+          const text = encodeURIComponent(`Check out ${product.NAME} - ₱${product.MIN}\n${shareUrl}`);
+          window.open(`https://www.facebook.com/dialog/send?link=${encodeURIComponent(shareUrl)}&app_id=${this.fbPageId}&redirect_uri=${encodeURIComponent(shareUrl)}`);
+          product.showShareMenu = false;
+        },
       },
       mounted() {
         this.fetchProducts();
@@ -1797,6 +1956,13 @@
         document.addEventListener('click', () => {
           this.showBrandDropdown = false;
           this.showTypeDropdown = false;
+        });
+
+        // Close share menus when clicking outside
+        document.addEventListener('click', () => {
+          this.filteredProducts.forEach(product => {
+            product.showShareMenu = false;
+          });
         });
       },
       unmounted() {
