@@ -1316,7 +1316,7 @@
       <!-- Replace single brand select with multiple select -->
       <div class="multiselect">
         <div class="multiselect-header" @click.stop="toggleBrandDropdown">
-          <span>{{ selectedBrands.length ? `${selectedBrands.length} Brands Selected` : 'All Brands' }}</span>
+          <span>{{ selectedBrands.length ? `${selectedBrands.length} Brand(s) Selected` : 'All Brands' }}</span>
           <span class="arrow">▼</span>
         </div>
         <div class="multiselect-content" v-if="showBrandDropdown" @click.stop>
@@ -1346,7 +1346,7 @@
       <!-- Replace single type select with multiple select -->
       <div class="multiselect">
         <div class="multiselect-header" @click.stop="toggleTypeDropdown">
-          <span>{{ selectedTypes.length ? `${selectedTypes.length} Types Selected` : 'All Types' }}</span>
+          <span>{{ selectedTypes.length ? `${selectedTypes.length} Type(s) Selected` : 'All Types' }}</span>
           <span class="arrow">▼</span>
         </div>
         <div class="multiselect-content" v-if="showTypeDropdown" @click.stop>
