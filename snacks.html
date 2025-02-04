@@ -62,11 +62,20 @@
                 border-radius: 0.5rem;
             }
         }
+
+        /* Additional bottom padding for mobile devices to ensure last item isn't covered by the cart */
+        @media (max-width: 767.98px) {
+            .container {
+                padding-bottom: 150px; /* Adjust this value as needed */
+            }
+        }
     </style>
 </head>
 <body class="bg-light">
     <div class="container mt-3 pb-5">
-        <h1 class="text-center mb-4"><img src="https://rjpatawaran.github.io/supervshop/superv_logo.jpeg" alt="SuperV" class="logo"></h1>
+        <h1 class="text-center mb-4">
+            <img src="https://rjpatawaran.github.io/supervshop/superv_logo.jpeg" alt="SuperV" class="logo">
+        </h1>
 
         <!-- Snack Grid -->
         <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -91,6 +100,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Spacer for Mobile: This div creates extra vertical space so the fixed cart doesn't overlap the content -->
+        <div class="d-md-none" style="height: 200px;"></div>
 
         <!-- Cart -->
         <div class="card cart-tile">
